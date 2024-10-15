@@ -5,6 +5,12 @@
 #include "Tile.h"
 #include "Async/Async.h"
 
+void ATileGrid::BeginPlay()
+{
+	Super::BeginPlay();
+	InitializeGrid();
+}
+
 // Sets default values
 ATileGrid::ATileGrid()
 {
@@ -18,16 +24,16 @@ ATileGrid::ATileGrid()
 
 void ATileGrid::InitializeGrid()
 {
-	//for문을 돌며, 타일 그리드 그리기
-	for (int32 x = 0; x < GridWidth; ++x)
-	{
-		for (int32 y = 0; y < GridHeight; ++y)
-		{
-			//타일 생성
-			ATile* NewTile = GetWorld()->SpawnActor<ATile>(ATile::StaticClass());
-			SetTileAt(x, y, NewTile);
-		}
-	}
+	////for문을 돌며, 타일 그리드 그리기
+	//for (int32 x = 0; x < GridWidth; ++x)
+	//{
+	//	for (int32 y = 0; y < GridHeight; ++y)
+	//	{
+	//		//타일 생성
+	//		ATile* NewTile = GetWorld()->SpawnActor<ATile>(ATile::StaticClass());
+	//		SetTileAt(x, y, NewTile);
+	//	}
+	//}
 
 	//병렬로 처리를 할는 For ( ParallerFor)
 	//ParallelFor(GridWidth * GridWidth,[this](int32 Index)
