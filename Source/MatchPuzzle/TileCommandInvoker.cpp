@@ -1,0 +1,41 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "TileCommandInvoker.h"
+
+// Sets default values
+ATileCommandInvoker::ATileCommandInvoker()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+}
+
+ATileCommandInvoker::~ATileCommandInvoker()
+{
+	
+}
+
+void ATileCommandInvoker::ExecuteCommand(ICommand* Command)
+{
+	//예시가 단순해서 (X), 캡슐화와 커맨드 패턴을 잘 지향하였다면, 거의 디커플링이 완벽
+	Command->Execute();
+	CommandHistory.Push(Command);
+}
+
+void ATileCommandInvoker::UndoLastCommand()
+{
+	// 삭제 안할고, '없음' '공백'
+	//되돌아가기 -> 되돌아갈 히스토리가 있어야 함
+	if(CommandHistory.Num() != 0)
+	{
+		ICommand* LastCommand = CommandHistory.Last();
+		LastCommand->Undo();
+
+		CommandHistory.Pop();
+		//CommandHistory.RemoveAll();		
+		//CommandHistory.RemoveAt()
+	}
+}
+
+
