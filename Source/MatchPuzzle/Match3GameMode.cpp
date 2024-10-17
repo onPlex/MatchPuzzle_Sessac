@@ -2,9 +2,10 @@
 
 
 #include "Match3GameMode.h"
-
+#include "GameStateSubject.h"
 #include "MyGameInstance.h"
 #include "TileGrid.h"
+#include "GameWidgetObserver.h"
 #include "Kismet/GameplayStatics.h"
 
 void AMatch3GameMode::BeginPlay()
@@ -26,4 +27,20 @@ void AMatch3GameMode::BeginPlay()
 	{
 		TileGrid->InitializeGrid();
 	}
+
+    //Observer 주체 생성 
+	UGameStateSubject* ObseverGameState = NewObject<UGameStateSubject>();
+
+	UGameWidgetObserver* ScoreWidget 
+	= CreateWidget<UGameWidgetObserver>(GetWorld(), LoadClass<UGameWidgetObserver>(nullptr,TEXT("/Game/UI/ScoreWidget")));
+	if (ScoreWidget)
+	{
+		ScoreWidget->AddToViewport();
+
+		//위젯을 옵저버로 등록 
+		ObseverGameState->RegisterObserver(ScoreWidget);
+	}
+
+
+
 }
