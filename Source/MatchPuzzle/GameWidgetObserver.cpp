@@ -3,11 +3,11 @@
 
 #include "GameWidgetObserver.h"
 
-void UGameWidgetObserver::OnNotify_Implementation(int32 UpdatedScore)
+void UGameWidgetObserver::OnNotify_Implementation(int32 UpdateScore)
 {
-	// ì£¼ì²´ë¡œë¶€í„° ìƒˆë¡œìš´ ì ìˆ˜ë¥¼ ë°›ì•„ì„œ CurrentScoreë¥¼ ì—…ë°ì´íŠ¸
-	CurrentScore = UpdatedScore;
+     //ÁÖÃ¼·ÎºÎÅÍ »õ·Î¿î Á¡¼ö¸¦ ¹Ş¾Æ¼­ Current Score¸¦ UPdate 
 
-	// UI ì—…ë°ì´íŠ¸ (ë¸”ë£¨í”„ë¦°íŠ¸ì—ì„œ êµ¬í˜„ ê°€ëŠ¥)
-	UpdateScoreUI();
+    CurrentScore = UpdateScore;
+
+    UpdateSocreUI();
 }

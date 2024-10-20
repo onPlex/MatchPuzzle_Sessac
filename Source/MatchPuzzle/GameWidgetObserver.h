@@ -6,20 +6,27 @@
 #include "Blueprint/UserWidget.h"
 #include "Observer.h"
 #include "GameWidgetObserver.generated.h"
+
+/**
+ * 
+ */
 UCLASS()
 class MATCHPUZZLE_API UGameWidgetObserver : public UUserWidget, public IObserver
 {
 	GENERATED_BODY()
 
+	
 private:
-	// í˜„ì¬ ì ìˆ˜ë¥¼ ì €ì¥
+	//ÇöÀç Á¡¼ö º¯¼ö
 	int32 CurrentScore;
 
 public:
-	// ì£¼ì²´ë¡œë¶€í„° ìƒíƒœ ë³€í™”ë¥¼ ìˆ˜ì‹ í•  ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
-	virtual void OnNotify_Implementation(int32 UpdatedScore) override;
 
-	// ì ìˆ˜ë¥¼ UIì— ë°˜ì˜í•˜ëŠ” í•¨ìˆ˜ (ë¸”ë£¨í”„ë¦°íŠ¸ì—ì„œ êµ¬í˜„ ê°€ëŠ¥)
+    //ÁÖÃ¼·ÎºÎÅÍ »óÅÂº¯È­¸¦ ¼ö½ÅÇÒ ¶§ È£ÃâÇÏ´Â ÇÔ¼ö
+	virtual void OnNotify_Implementation(int32 UpdateScore) override;
+
+	// BlueprintImplementableEvent = ºí·çÇÁ¸°Æ®¿¡¼­ ½Ç±¸Çö °¡´É 
 	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
-	void UpdateScoreUI();
+	void UpdateSocreUI();
+	
 };

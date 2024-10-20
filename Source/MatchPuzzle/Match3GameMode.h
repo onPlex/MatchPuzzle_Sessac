@@ -18,4 +18,7 @@ public:
 
 	virtual void BeginPlay() override;
 	
+
+	//Observer 주체 생성 
+	UGameStateSubject* ObseverGameState;
 };
