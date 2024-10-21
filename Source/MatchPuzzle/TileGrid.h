@@ -47,4 +47,11 @@ public:
 
 	// 타일의 그리드 좌표를 얻는 함수
 	bool GetTileGridPosition(ATile* Tile, int32& OutX, int32& OutY) const;
+
+	
+	// 매칭 검사 함수
+	TArray<ATile*> CheckForMatches();
+
+	// 타일 삭제 함수
+	void RemoveMatchingTiles(const TArray<ATile*>& MatchingTiles);
 };

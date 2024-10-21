@@ -13,6 +13,7 @@ ATile::ATile()
 	TileType = FName("Cube");  // 기본 타입을 Cube로 설정 (나중에 랜덤하게 변경)
 
 	bIsSelected = false;  // 선택 여부 초기화
+	TilePosition = FVector2D::ZeroVector;  // 그리드 상의 좌표 초기화
 }
 
 // Called when the game starts or when spawned
@@ -60,6 +61,23 @@ void ATile::ProceesDataInParallel()
 	});
 
 	UE_LOG(LogTemp, Warning, TEXT("ParallelFor Finish"));
+}
+
+bool ATile::IsAdjacentTo(ATile* OtherTile) const
+{
+	if (!OtherTile)
+	{
+		return false;
+	}
+
+	// 인접 여부를 확인 (가로 또는 세로로 한 칸 차이)
+	return (FMath::Abs(TilePosition.X - OtherTile->TilePosition.X) == 1 && TilePosition.Y == OtherTile->TilePosition.Y) ||
+		   (FMath::Abs(TilePosition.Y - OtherTile->TilePosition.Y) == 1 && TilePosition.X == OtherTile->TilePosition.X);
+}
+
+void ATile::UpdateTilePosition(const FVector2D& NewPosition)
+{
+	TilePosition = NewPosition;
 }
 
 void ATile::SetSelected(bool bSelected)

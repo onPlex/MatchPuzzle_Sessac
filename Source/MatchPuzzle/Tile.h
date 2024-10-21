@@ -17,6 +17,8 @@ public:
 
 	// 타일을 선택 또는 해제하는 함수
 	void SetSelected(bool bSelected);
+
+	
 	
 protected:
 	// Called when the game starts or when spawned
@@ -46,4 +48,13 @@ public:
 
 	// 병렬 처리를 테스트하는 함수
 	void ProceesDataInParallel();
+
+
+	// 타일의 2D 좌표 (그리드 상의 위치)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Tile Properties")
+	FVector2D TilePosition;
+	// 다른 타일과 인접 여부를 확인하는 함수
+	bool IsAdjacentTo(ATile* OtherTile) const;
+	// 타일의 위치를 변경할 때 그리드 상의 위치를 업데이트하는 함수
+	void UpdateTilePosition(const FVector2D& NewPosition);
 };

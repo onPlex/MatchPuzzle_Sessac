@@ -40,7 +40,7 @@ void ATileGamePlayerController::SetupInputComponent()
     if (UEnhancedInputComponent* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent))
     {
         // 마우스 클릭 입력 바인딩
-        EnhancedInputComp->BindAction(SelectTileAction, ETriggerEvent::Triggered, this, &ATileGamePlayerController::SelectTile);
+        EnhancedInputComp->BindAction(SelectTileAction, ETriggerEvent::Started, this, &ATileGamePlayerController::SelectTile);
     }
 }
 
@@ -64,7 +64,7 @@ void ATileGamePlayerController::SelectTile(const FInputActionValue& Value)
             // 두 번째 타일 선택 (인접 타일만 가능)
             else if (!SecondSelectedTile.IsValid() && ClickedTile != FirstSelectedTile)
             {
-                if (TileGrid && TileGrid->AreTilesAdjacent(FirstSelectedTile.Get(), ClickedTile))  // 인접 타일인지 확인
+                if (FirstSelectedTile->IsAdjacentTo(ClickedTile))  // 인접 타일인지 확인
                 {
                     SecondSelectedTile = ClickedTile;
                     SecondSelectedTile->SetSelected(true);  // 두 번째 타일 강조
@@ -98,6 +98,15 @@ void ATileGamePlayerController::ProcessSelectedTiles()
 
         // 매칭 확인 로직 (교환 후 매칭이 있는지 확인)
         // MatchCheck(FirstSelectedTile, SecondSelectedTile);
+        // 매칭된 타일 검사
+       // TArray<ATile*> MatchingTiles = TileGrid->CheckForMatches();
+       //
+       // // 매칭된 타일이 있다면 삭제
+       // if (MatchingTiles.Num() > 0)
+       // {
+       //     TileGrid->RemoveMatchingTiles(MatchingTiles);
+       // }
+        
 
         // 선택된 타일들 해제
         FirstSelectedTile->SetSelected(false);
