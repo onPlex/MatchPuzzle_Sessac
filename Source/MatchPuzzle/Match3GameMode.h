@@ -15,10 +15,5 @@ class MATCHPUZZLE_API AMatch3GameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-
 	virtual void BeginPlay() override;
-	
-
-	//Observer 주체 생성 
-	UGameStateSubject* ObseverGameState;
 };

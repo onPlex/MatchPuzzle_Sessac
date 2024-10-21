@@ -27,8 +27,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Grid")
 	int32 GridHeight;
 
+	//타일 간의 배치 간격
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Grid")
+	float TileSpacing;
+
 	UPROPERTY()
 	TArray<ATile*> TileArray;
+
+	//타일을 생성한 ATile 레퍼런스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Grid")
+	TSubclassOf<ATile> TileClass;
 
 	//그리드 초기화하는 함수
 	void InitializeGrid();
@@ -36,7 +44,6 @@ public:
 	//특정 위치의 타일을 얻는 함수
 	ATile* GetTileAt(int32 x, int32 y) const;
 
-	//특정 위치의 타일을 설정하는 함수
-	
+	//특정 위치의 타일을 설정하는 함수	
 	void SetTileAt(int32 x, int32 y, ATile* tile);
 };

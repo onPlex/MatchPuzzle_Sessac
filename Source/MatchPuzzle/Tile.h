@@ -27,7 +27,19 @@ public:
 	//타일 매칭 확인 함수
 	bool IsMatching(ATile* otherTile) const;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tile Properties")
+	UStaticMeshComponent* TileMeshComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
+	TMap<FName, UStaticMesh*> TileMeshes;
+
+
+	//타일 매칭 확인 함수
+	bool IsMatcing(ATile* OtherTile) const;
+
+	//타일의 외형을 TileType에 따라 설정하는 함수
+	void UpdateTileAppearance();
+	
 	void ProceesDataInParallerl();
 
 };
