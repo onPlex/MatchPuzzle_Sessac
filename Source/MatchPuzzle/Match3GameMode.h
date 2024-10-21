@@ -6,9 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "Match3GameMode.generated.h"
 
-/**
- * 
- */
+class UGameStateSubject;
 UCLASS()
 class MATCHPUZZLE_API AMatch3GameMode : public AGameModeBase
 {
@@ -20,5 +18,5 @@ public:
 	
 
 	//Observer 주체 생성 
-	UGameStateSubject* ObseverGameState;
+	//UGameStateSubject* ObseverGameState;
 };

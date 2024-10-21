@@ -12,6 +12,7 @@ void AMatch3GameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	/*
 	UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(
 		UGameplayStatics::GetGameInstance(GetWorld()));
 
@@ -29,7 +30,7 @@ void AMatch3GameMode::BeginPlay()
 	}
 
     //Observer 주체 생성 
-	UGameStateSubject* ObseverGameState = NewObject<UGameStateSubject>();
+	UGameStateSubject* LocalObserverGameState  = NewObject<UGameStateSubject>();
 
 	UGameWidgetObserver* ScoreWidget 
 	= CreateWidget<UGameWidgetObserver>(GetWorld(), LoadClass<UGameWidgetObserver>(nullptr,TEXT("/Game/UI/ScoreWidget")));
@@ -38,9 +39,6 @@ void AMatch3GameMode::BeginPlay()
 		ScoreWidget->AddToViewport();
 
 		//위젯을 옵저버로 등록 
-		ObseverGameState->RegisterObserver(ScoreWidget);
-	}
-
-
-
+		LocalObserverGameState->RegisterObserver(ScoreWidget);
+	}*/
 }
