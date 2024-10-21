@@ -40,5 +40,11 @@ public:
 	ATile* GetTileAt(int32 x, int32 y) const;
 
 	//특정 위치의 타일을 설정하는 함수	
-	void SetTileAt(int32 x, int32 y, ATile* tile);
+	void SetTileAt(int32 X, int32 Y, ATile* Tile);
+
+	// 타일의 인접 여부를 확인하는 함수
+	bool AreTilesAdjacent(ATile* FirstTile, ATile* SecondTile);
+
+	// 타일의 그리드 좌표를 얻는 함수
+	bool GetTileGridPosition(ATile* Tile, int32& OutX, int32& OutY) const;
 };

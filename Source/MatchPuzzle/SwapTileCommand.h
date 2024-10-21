@@ -1,31 +1,28 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Command.h"
+#include "Tile.h"
+#include "SwapTileCommand.generated.h"
 
-class ATile;
-class MATCHPUZZLE_API SwapTileCommand : public ICommand
+UCLASS()
+class MATCHPUZZLE_API USwapTileCommand : public UObject, public ICommand
 {
-public:
-	SwapTileCommand();
-	~SwapTileCommand();
-	
+	GENERATED_BODY()
 
-	SwapTileCommand(ATile* InFirstTile, ATile* InSecondTile);
-	//FirstTile(InFirstTile), SecondTile(InSecondTile)
 private:
 	ATile* FirstTile;
 	ATile* SecondTile;
-	FName FirstTileOrigineType;
-	FName SecondTileOrigineType;
-	
+
+	// 교환 전 타일의 위치
+	FVector FirstTileOriginalLocation;
+	FVector SecondTileOriginalLocation;
+
 public:
+	// 생성자
+	void Initialize(ATile* InFirstTile, ATile* InSecondTile);
 
-    //ICommand 의 인터페이스 함수들 Imprement ~ 
-    virtual void Execute() override;
-    virtual void Undo() override;
-
-
+	// ICommand 인터페이스 구현
+	virtual void Execute() override;
+	virtual void Undo() override;
 };

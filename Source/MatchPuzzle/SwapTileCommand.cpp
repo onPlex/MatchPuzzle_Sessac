@@ -1,37 +1,29 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SwapTileCommand.h"
 #include "Tile.h"
 
-SwapTileCommand::SwapTileCommand()
-{
-
-}
-
-SwapTileCommand::~SwapTileCommand()
-{
-}
-
-SwapTileCommand::SwapTileCommand(ATile* InFirstTile, ATile* InSecondTile)
+// 커맨드 초기화
+void USwapTileCommand::Initialize(ATile* InFirstTile, ATile* InSecondTile)
 {
     FirstTile = InFirstTile;
     SecondTile = InSecondTile;
 
-    FirstTileOrigineType = InFirstTile->TileType;
-    SecondTileOrigineType = InSecondTile->TileType;
+    // 원래 위치를 저장
+    FirstTileOriginalLocation = FirstTile->GetActorLocation();
+    SecondTileOriginalLocation = SecondTile->GetActorLocation();
 }
 
-void SwapTileCommand::Execute()
+void USwapTileCommand::Execute()
 {
-    //SWAP , ��ġ Vector (Location ) ,��� (Row ,Collums -> Int , Int)
-    FName Temp = FirstTile->TileType;
-    FirstTile->TileType = SecondTile->TileType;
-    SecondTile->TileType = Temp;
+    // 두 타일의 위치를 서로 교환
+    FirstTile->SetActorLocation(SecondTileOriginalLocation);
+    SecondTile->SetActorLocation(FirstTileOriginalLocation);
+	
+    // TODO:: 매칭 확인 등의 로직
 }
 
-void SwapTileCommand::Undo()
+void USwapTileCommand::Undo()
 {
-    FirstTile->TileType = FirstTileOrigineType;
-    SecondTile->TileType = SecondTileOrigineType;
+    // 타일의 위치를 원래대로 되돌림
+    FirstTile->SetActorLocation(FirstTileOriginalLocation);
+    SecondTile->SetActorLocation(SecondTileOriginalLocation);
 }

@@ -3,6 +3,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputAction.h"
+#include "TileCommandInvoker.h"
+#include "SwapTileCommand.h"
+#include "TileGrid.h"
 
 ATileGamePlayerController::ATileGamePlayerController()
 {
@@ -43,7 +46,6 @@ void ATileGamePlayerController::SetupInputComponent()
 
 void ATileGamePlayerController::SelectTile(const FInputActionValue& Value)
 {
-    // 마우스 클릭 위치를 가져옴
     FHitResult Hit;
     GetHitResultUnderCursor(ECC_Visibility, false, Hit);
 
@@ -52,22 +54,29 @@ void ATileGamePlayerController::SelectTile(const FInputActionValue& Value)
         ATile* ClickedTile = Cast<ATile>(Hit.GetActor());
         if (ClickedTile)
         {
-            // 첫 번째 타일을 선택하는 경우
+            // 첫 번째 타일 선택
             if (!FirstSelectedTile.IsValid())
             {
                 FirstSelectedTile = ClickedTile;
                 FirstSelectedTile->SetSelected(true);  // 첫 번째 타일 강조
                 UE_LOG(LogTemp, Warning, TEXT("First tile selected: %s"), *FirstSelectedTile->GetName());
             }
-            // 두 번째 타일을 선택하는 경우
+            // 두 번째 타일 선택 (인접 타일만 가능)
             else if (!SecondSelectedTile.IsValid() && ClickedTile != FirstSelectedTile)
             {
-                SecondSelectedTile = ClickedTile;
-                SecondSelectedTile->SetSelected(true);  // 두 번째 타일 강조
-                UE_LOG(LogTemp, Warning, TEXT("Second tile selected: %s"), *SecondSelectedTile->GetName());
+                if (TileGrid && TileGrid->AreTilesAdjacent(FirstSelectedTile.Get(), ClickedTile))  // 인접 타일인지 확인
+                {
+                    SecondSelectedTile = ClickedTile;
+                    SecondSelectedTile->SetSelected(true);  // 두 번째 타일 강조
+                    UE_LOG(LogTemp, Warning, TEXT("Second tile selected: %s"), *SecondSelectedTile->GetName());
 
-                // 두 타일 선택 완료 후 처리
-                ProcessSelectedTiles();
+                    // 두 타일 선택 완료 후 처리
+                    ProcessSelectedTiles();
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("Tiles are not adjacent."));
+                }
             }
         }
     }
@@ -78,13 +87,21 @@ void ATileGamePlayerController::ProcessSelectedTiles()
     if (FirstSelectedTile.IsValid() && SecondSelectedTile.IsValid())
     {
         // 두 개의 선택된 타일을 처리하는 로직
-        UE_LOG(LogTemp, Warning, TEXT("Processing tiles: %s and %s"), *FirstSelectedTile->GetName(), *SecondSelectedTile->GetName());
 
-        // 두 타일의 선택 해제
+        // 교환 명령 생성
+        USwapTileCommand* SwapCommand = NewObject<USwapTileCommand>(); // 클래스 이름 수정
+        SwapCommand->Initialize(FirstSelectedTile.Get(), SecondSelectedTile.Get());
+
+        // 커맨드 실행
+        ATileCommandInvoker* CommandInvoker = GetWorld()->SpawnActor<ATileCommandInvoker>();
+        CommandInvoker->ExecuteCommand(SwapCommand);
+
+        // 매칭 확인 로직 (교환 후 매칭이 있는지 확인)
+        // MatchCheck(FirstSelectedTile, SecondSelectedTile);
+
+        // 선택된 타일들 해제
         FirstSelectedTile->SetSelected(false);
         SecondSelectedTile->SetSelected(false);
-
-        // 타일 처리 로직 (교환, 매칭 확인 등)
 
         // 선택 초기화
         FirstSelectedTile = nullptr;
