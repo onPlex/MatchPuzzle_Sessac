@@ -4,7 +4,9 @@
 #include "TileGamePlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "SwapTileCommand.h"
 #include "Tile.h"
+#include "TileCommandInvoker.h"
 
 ATileGamePlayerController::ATileGamePlayerController()
 {
@@ -57,14 +59,18 @@ void ATileGamePlayerController::SelectTile(const FInputActionValue& Value)
 			if(!FirstSelecetTile.IsValid())
 			{
 				FirstSelecetTile = ClickedTile;
+				FirstSelecetTile->SetSelected(true);
 				UE_LOG(LogTemp, Display, TEXT("First Select Tile: %s"),*FirstSelecetTile->GetName());
 			}
 			else if(!SecondSelecetTile.IsValid() && ClickedTile != FirstSelecetTile)
 			{
 				//두번째 타일 선택
 				SecondSelecetTile = ClickedTile;
+				SecondSelecetTile->SetSelected(true);
 				UE_LOG(LogTemp, Display, TEXT("Second Select Tile: %s"),*SecondSelecetTile->GetName());
-				//두번째 타일 선택 완료 후 처리
+
+
+				//두번째 타일 선택 완료 후 처리 - 두개다 골라졌을때
 				ProcessSelectTiles();
 			}
 		}
@@ -79,6 +85,17 @@ void ATileGamePlayerController::ProcessSelectTiles()
 	{
 		//타일 처리 로직 ( 자리교환, 매칭확인 )
 
+		//교환명령 생성
+		USwapTileCommand* SwapCommand = NewObject<USwapTileCommand>();
+		SwapCommand->Initialize(FirstSelecetTile.Get(), SecondSelecetTile.Get());
+
+		ATileCommandInvoker* CommandInvoker = GetWorld()->SpawnActor<ATileCommandInvoker>();
+		CommandInvoker->ExecuteCommand(SwapCommand);
+
+		//타일 선택 해제
+		FirstSelecetTile->SetSelected(false);
+		SecondSelecetTile->SetSelected(false);
+		
 		//선택 초기화
 		FirstSelecetTile = nullptr;
 		SecondSelecetTile = nullptr;

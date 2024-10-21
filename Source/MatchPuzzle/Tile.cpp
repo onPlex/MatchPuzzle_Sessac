@@ -16,7 +16,9 @@ ATile::ATile()
 	RootComponent = TileMeshComponent;
 
 	TileType = FName("Default");
+	bIsSelected = false;
 }
+
 
 // Called when the game starts or when spawned
 void ATile::BeginPlay()
@@ -24,6 +26,8 @@ void ATile::BeginPlay()
 	Super::BeginPlay();
 	UpdateTileAppearance();
 }
+
+
 
 bool ATile::IsMatching(ATile* otherTile) const
 {
@@ -67,3 +71,34 @@ void ATile::ProceesDataInParallerl()
 	});
 	UE_LOG(LogTemp, Warning, TEXT("ParallelForFinish"));
 }
+
+void ATile::SetSelected(bool bSelected)
+{
+	bIsSelected = bSelected;
+	UpdateAppearance();
+}
+void ATile::UpdateAppearance()
+{
+	//선택되었을 때, 시각적 피드백 - > Material Emissive
+	if(bIsSelected)
+	{
+		if(UStaticMeshComponent* StaticMeshComponent = TileMeshComponent)
+		{
+			//선택된 타일을 강조
+			TileMeshComponent->SetRenderCustomDepth(true);
+			//EmissiveStrength 제어를 통한 하이라이트 구현
+			TileMeshComponent->SetScalarParameterValueOnMaterials(TEXT("EmissiveStrength"), 10.0f);
+		}		
+	}
+	else
+	{
+		if(UStaticMeshComponent* StaticMeshComponent = TileMeshComponent)
+		{
+			//선택된 타일을 강조
+			TileMeshComponent->SetRenderCustomDepth(false);
+			//EmissiveStrength 제어를 통한 하이라이트 구현
+			TileMeshComponent->SetScalarParameterValueOnMaterials(TEXT("EmissiveStrength"), 0.0f);
+		}	
+	}
+}
+

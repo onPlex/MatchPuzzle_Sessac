@@ -14,10 +14,6 @@ class MATCHPUZZLE_API ATileCommandInvoker : public AActor
 
 private:
 	TArray<ICommand*> CommandHistory; 
-public:	
-	// Sets default values for this actor's properties
-	ATileCommandInvoker();
-	~ATileCommandInvoker();
 
 public:
 	 //커맨드 실행하고, 히스토리(TArray) 에 저장
