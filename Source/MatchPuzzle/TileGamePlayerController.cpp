@@ -23,12 +23,12 @@ void ATileGamePlayerController::BeginPlay()
 	bShowMouseCursor = true;
 
 	//EnhancedInput 실행
-	if(APlayerController* PlayerController = Cast<APlayerController>(this))
+	if (APlayerController* PlayerController = Cast<APlayerController>(this))
 	{
 		UEnhancedInputLocalPlayerSubsystem* _Subsystem
-		= ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+			= ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 
-		if(_Subsystem)
+		if (_Subsystem)
 		{
 			_Subsystem->AddMappingContext(InputMapping, 0);
 		}
@@ -39,9 +39,9 @@ void ATileGamePlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	if(UEnhancedInputComponent* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent))
+	if (UEnhancedInputComponent* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		EnhancedInputComp->BindAction(SelectInputAction,ETriggerEvent::Started,this, &ATileGamePlayerController::SelectTile);
+		EnhancedInputComp->BindAction(SelectInputAction, ETriggerEvent::Started, this, &ATileGamePlayerController::SelectTile);
 	}
 }
 
@@ -51,37 +51,44 @@ void ATileGamePlayerController::SelectTile(const FInputActionValue& Value)
 	FHitResult Hit;
 	GetHitResultUnderCursor(ECC_Visibility, false, Hit);
 
-	if(Hit.bBlockingHit)
+	if (Hit.bBlockingHit)
 	{
 		ATile* ClickedTile = Cast<ATile>(Hit.GetActor());
-		if(ClickedTile)
+		if (ClickedTile)
 		{
-			if(!FirstSelecetTile.IsValid())
+			if (!FirstSelecetTile.IsValid())
 			{
 				FirstSelecetTile = ClickedTile;
 				FirstSelecetTile->SetSelected(true);
-				UE_LOG(LogTemp, Display, TEXT("First Select Tile: %s"),*FirstSelecetTile->GetName());
+				UE_LOG(LogTemp, Display, TEXT("First Select Tile: %s"), *FirstSelecetTile->GetName());
 			}
-			else if(!SecondSelecetTile.IsValid() && ClickedTile != FirstSelecetTile)
+			else if (!SecondSelecetTile.IsValid() && ClickedTile != FirstSelecetTile)
 			{
-				//두번째 타일 선택
-				SecondSelecetTile = ClickedTile;
-				SecondSelecetTile->SetSelected(true);
-				UE_LOG(LogTemp, Display, TEXT("Second Select Tile: %s"),*SecondSelecetTile->GetName());
+				if (FirstSelecetTile->IsAdjacentTo(ClickedTile))
+				{
+					//두번째 타일 선택
+					SecondSelecetTile = ClickedTile;
+					SecondSelecetTile->SetSelected(true);
+					UE_LOG(LogTemp, Display, TEXT("Second Select Tile: %s"), *SecondSelecetTile->GetName());
 
 
-				//두번째 타일 선택 완료 후 처리 - 두개다 골라졌을때
-				ProcessSelectTiles();
+					//두번째 타일 선택 완료 후 처리 - 두개다 골라졌을때
+					ProcessSelectTiles();
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Tiles are not adjacent"));
+				}
 			}
 		}
-	
+
 	}
 }
 
 void ATileGamePlayerController::ProcessSelectTiles()
 {
 	//두 개의 타일이 선택되었을 때
-	if(FirstSelecetTile.IsValid() && SecondSelecetTile.IsValid())
+	if (FirstSelecetTile.IsValid() && SecondSelecetTile.IsValid())
 	{
 		//타일 처리 로직 ( 자리교환, 매칭확인 )
 
@@ -95,7 +102,7 @@ void ATileGamePlayerController::ProcessSelectTiles()
 		//타일 선택 해제
 		FirstSelecetTile->SetSelected(false);
 		SecondSelecetTile->SetSelected(false);
-		
+
 		//선택 초기화
 		FirstSelecetTile = nullptr;
 		SecondSelecetTile = nullptr;

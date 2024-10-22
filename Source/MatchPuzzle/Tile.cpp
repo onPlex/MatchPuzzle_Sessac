@@ -17,6 +17,9 @@ ATile::ATile()
 
 	TileType = FName("Default");
 	bIsSelected = false;
+	
+	//그리드상의 초기화 위치
+	TilePosition = FVector2D::ZeroVector;
 }
 
 
@@ -102,3 +105,28 @@ void ATile::UpdateAppearance()
 	}
 }
 
+bool ATile::IsAdjacentTo(ATile* OtherTile) const
+{
+	if (!OtherTile)
+	{
+		return false;
+	}
+
+	//인접 여부르르 확인 ( 가로, 세로 한칸 인지 ? ) 	
+
+	bool _isHolizontal;
+	_isHolizontal = FMath::Abs(TilePosition.X - OtherTile->TilePosition.X) == 1 
+	&& TilePosition.Y == OtherTile->TilePosition.Y;
+
+	bool _isVertical;
+	_isVertical = FMath::Abs(TilePosition.Y - OtherTile->TilePosition.Y) == 1
+		&& TilePosition.X == OtherTile->TilePosition.X;
+
+
+	return _isHolizontal || _isVertical;
+}
+
+void ATile::UpdateTilePosition(const FVector2D& NewPosition)
+{
+	TilePosition = NewPosition;
+}

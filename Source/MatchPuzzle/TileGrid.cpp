@@ -29,7 +29,39 @@ void ATileGrid::InitializeGrid()
 	TArray<FName> TileTypes =
 		{FName("Cone"), FName("Cube"), FName("Cylinder"), FName("Sphere"),
 		FName("Capsule"), FName("Pyramid")};
+  /*
+	for (int32 x = 0; x < GridWidth; ++x)
+	{
+		for (int32 y = 0; y < GridHeight; ++y)
+		{
+		    //타일 생성 
+			FActorSpawnParameters SpawnParameters;
+			ATile* NewTile = GetWorld()->SpawnActor<ATile>(TileClass, SpawnParameters);
 
+			if (NewTile)
+			{
+			    //타일의 그리드상의 위치
+				NewTile->TilePosition = FVector2D(x,y);
+
+				//생성된 타일의 타일 설정
+				NewTile->TileType = TileTypes[FMath::RandRange(0, TileTypes.Num() - 1)];
+
+				//타일 종류에 따라서 외형 업데이트
+				NewTile->UpdateTileAppearance();
+
+				//타일을 타일그리드에 자식으로 부착
+				NewTile->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+				//타일을 그리드에 배치
+				FVector TileLocation = FVector(x * TileSpacing, y * TileSpacing, 0.0f);
+				NewTile->SetActorRelativeLocation(TileLocation);
+
+				SetTileAt(x, y, NewTile);
+			}
+
+		}
+    }*/
+  
 	for (int x = 0; x < GridWidth; ++x)
 	{
 		for(int y = 0; y < GridHeight; ++y)
@@ -54,7 +86,10 @@ void ATileGrid::InitializeGrid()
 					ATile* NewTile = GetWorld()->SpawnActor<ATile>(TileClass,SpawnParameters);
 
 					if(NewTile)
-					{
+					{					
+					    //타일의 그리드상의 위치
+						NewTile->TilePosition = FVector2D(x, y);
+
 						//생성된 타일의 타일 설정
 						NewTile->TileType = RandomTileType;
 
@@ -77,8 +112,7 @@ void ATileGrid::InitializeGrid()
 				});
 			});
 		}
-	}
-	
+	}	
 }
 
 ATile* ATileGrid::GetTileAt(int32 x, int32 y) const
