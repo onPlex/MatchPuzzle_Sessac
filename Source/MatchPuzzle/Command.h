@@ -22,11 +22,9 @@ class MATCHPUZZLE_API ICommand
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-
     //명령 실행 
     virtual void Execute() = 0;    
     //명령 취소 --> Puzzle 게임 한정 ~= 블록 되돌아가기
     virtual void Undo() = 0;
-    
     //virtual ~ICommand()= default;
 };
