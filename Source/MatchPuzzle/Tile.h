@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
+
+class ATileGrid;
 UCLASS()
 class MATCHPUZZLE_API ATile : public AActor
 {
@@ -63,4 +65,7 @@ public:
     
     //타일의 위치를 변경할 때, 그리드 상의 위치 업데이트 함수
     void UpdateTilePosition(const FVector2D& NewPosition);    
+
+
+	ATileGrid* TileGrid;
 };

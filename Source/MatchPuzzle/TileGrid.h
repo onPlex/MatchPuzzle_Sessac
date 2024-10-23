@@ -46,4 +46,25 @@ public:
 
 	//특정 위치의 타일을 설정하는 함수	
 	void SetTileAt(int32 x, int32 y, ATile* tile);
+
+	//매칭을 확인 Array
+	TArray<ATile*> CheckForMatches();
+
+	//Swap 함수
+	void SwapTiles(ATile* FirstTile, ATile* SecondTile);
+
+	void RemoveMatchingTiles(const TArray<ATile*>& MatchingTiles);
+	void DropDownTiles();
+
+	bool GetTileGridPosition(ATile* Tile, int32& OutX, int32& OutY) const;
+
+	void RefillGrid();
+
+	void ProcessMatchingLoop();
+
+private:
+	TArray<ATile*> CheckHorizontalMatches(int32 StartX, int32 StartY);
+	TArray<ATile*> CheckVerticalMatches(int32 StartX, int32 StartY);
+
+	FName GenerateRandomTileType();
 };
