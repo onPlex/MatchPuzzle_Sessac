@@ -56,24 +56,6 @@ void ATile::UpdateTileAppearance()
 	}
 }
 
-void ATile::ProceesDataInParallerl()
-{
-	TArray<int32> DataArray;
-	DataArray.Init(0, 100);
-
-	ParallelFor(DataArray.Num(), [&](int32 Index)
-	{
-		DataArray[Index] = Index * 2;
-
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f
-			                                 , FColor::Red,
-			                                 FString::Printf(TEXT("Tile %d-%d"), Index, DataArray[Index]));
-		}
-	});
-	UE_LOG(LogTemp, Warning, TEXT("ParallelForFinish"));
-}
 
 void ATile::SetSelected(bool bSelected)
 {
@@ -107,23 +89,14 @@ void ATile::UpdateAppearance()
 
 bool ATile::IsAdjacentTo(ATile* OtherTile) const
 {
-	if (!OtherTile)
-	{
-		return false;
-	}
+	if (!OtherTile) return false;
 
-	//인접 여부르르 확인 ( 가로, 세로 한칸 인지 ? ) 	
+	// 두 타일의 그리드 좌표 차이를 계산하여 인접 여부 확인
+	int32 DeltaX = FMath::Abs(TilePosition.X - OtherTile->TilePosition.X);
+	int32 DeltaY = FMath::Abs(TilePosition.Y - OtherTile->TilePosition.Y);
 
-	bool _isHolizontal;
-	_isHolizontal = FMath::Abs(TilePosition.X - OtherTile->TilePosition.X) == 1 
-	&& TilePosition.Y == OtherTile->TilePosition.Y;
-
-	bool _isVertical;
-	_isVertical = FMath::Abs(TilePosition.Y - OtherTile->TilePosition.Y) == 1
-		&& TilePosition.X == OtherTile->TilePosition.X;
-
-
-	return _isHolizontal || _isVertical;
+	// 두 타일이 가로 또는 세로로 1칸 차이일 경우 인접한 것으로 판단
+	return (DeltaX + DeltaY) == 1;
 }
 
 void ATile::UpdateTilePosition(const FVector2D& NewPosition)

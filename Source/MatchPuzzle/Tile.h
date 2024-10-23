@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
+class ATileGrid;
+
 UCLASS()
 class MATCHPUZZLE_API ATile : public AActor
 {
@@ -50,9 +52,8 @@ public:
 
 	//타일의 외형을 TileType에 따라 설정하는 함수
 	void UpdateTileAppearance();
-	
-	void ProceesDataInParallerl();
 
+	ATileGrid* TileGrid;
 
     // 타일이 2D 좌표 (그리드) 에서의 위치
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
