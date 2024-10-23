@@ -74,4 +74,6 @@ private:
 
 	// 랜덤한 타일 타입을 생성하는 함수
 	FName GenerateRandomTileType();
+
+	void ProcessMatchingLoop();
 };

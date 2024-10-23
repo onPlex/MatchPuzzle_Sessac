@@ -304,6 +304,32 @@ FName ATileGrid::GenerateRandomTileType()
 	return TileTypes[FMath::RandRange(0, TileTypes.Num() - 1)];
 }
 
+void ATileGrid::ProcessMatchingLoop()
+{
+	// 매칭이 있는지 확인
+	TArray<ATile*> MatchingTiles = CheckForMatches();
+
+	if (MatchingTiles.Num() > 0)
+	{
+		// 매칭된 타일이 있을 경우 삭제
+		RemoveMatchingTiles(MatchingTiles);
+
+		// 타일을 빈 공간으로 이동
+		DropDownTiles();
+
+		// 빈 공간에 새로운 타일을 채우기
+		RefillGrid();
+
+		// 모든 작업이 끝난 후 다시 매칭을 확인하기 위해 재귀 호출 (매칭이 더 이상 없을 때까지 반복)
+		ProcessMatchingLoop();  // 재귀 호출
+	}
+	else
+	{
+		// 더 이상 매칭이 없으면 루프 종료
+		UE_LOG(LogTemp, Display, TEXT("No more matches, puzzle stabilized."));
+	}
+}
+
 void ATileGrid::RefillGrid()
 {
 	for (int32 X = 0; X < GridWidth; ++X)
@@ -336,6 +362,9 @@ void ATileGrid::RefillGrid()
 			}
 		}
 	}
+
+	// 새로운 타일이 생성된 후 매칭 루프 처리
+	ProcessMatchingLoop();  // 매칭 루프 시작
 }
 
 void ATileGrid::RemoveMatchingTiles(const TArray<ATile*>& MatchingTiles)
@@ -353,6 +382,14 @@ void ATileGrid::RemoveMatchingTiles(const TArray<ATile*>& MatchingTiles)
 		}
 	}
 
+	/*
+	*  // 매칭된 타일 수에 따라 점수 추가
+	AddScore(NumMatchedTiles * 100);  // 예시: 타일 하나당 100점
+	 */
+	
 	// 빈 공간을 채우기 위해 타일을 아래로 드랍
 	DropDownTiles();
+
+	// 이후 매칭 루프 처리
+	ProcessMatchingLoop();  // 매칭 루프 시작
 }
