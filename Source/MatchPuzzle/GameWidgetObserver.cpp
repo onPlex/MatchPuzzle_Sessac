@@ -2,12 +2,27 @@
 
 
 #include "GameWidgetObserver.h"
+#include "GI_Puzzle.h"
+#include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
 void UGameWidgetObserver::OnNotify_Implementation(int32 UpdateScore)
 {
-     //주체로부터 새로운 점수를 받아서 Current Score를 UPdate 
+	UE_LOG(LogTemp, Log, TEXT("OnNotify called with score: %d"), UpdateScore);
 
-    CurrentScore = UpdateScore;
+	UpdateSocreUI(UpdateScore);
+}
 
-    UpdateSocreUI();
+void UGameWidgetObserver::UpdateSocreUI(int32 NewScore)
+{
+	// ScoreText가 바인딩되어 있는지 확인
+	if (ScoreText)
+	{
+		// TextBlock의 내용을 업데이트
+		ScoreText->SetText(FText::AsNumber(NewScore));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ScoreText is not bound to the widget."));
+	}
 }

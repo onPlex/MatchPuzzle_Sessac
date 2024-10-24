@@ -18,25 +18,14 @@ class MATCHPUZZLE_API UGameStateSubject : public UObject
 private:	
 	// 옵저버 리시트: 등록된 옵저버들 -> 관리
 	TArray<TScriptInterface<IObserver>> Observers;		
-	//주체의 상태정보 -> 플레이어 점수
-	int32 PlayerScore;
 	
-public:
-      // 생성자
-     UGameStateSubject();
-     
+public: 
      //옵저버 등록 
      void RegisterObserver(TScriptInterface<IObserver> Observer);
 	
 	 //옵저버 등록 해제	 
 	 void UnregisterObserver(TScriptInterface<IObserver> Observer);
 	 
-	 //점수 변화시, 모든 옵저버들에게 알림
-	 void NotifyObservers();
-	 
-	 //점수를 변경하는 함수,
-	 void IncreasePlayerScore(int32 Increament);
-	 
-	 //점수 반환
-	 int32 GetPlayerScore() const {return PlayerScore;}
+	// WorldContextObject를 매개변수로 받아서 처리
+	void NotifyObservers(UObject* WorldContextObject);
 };

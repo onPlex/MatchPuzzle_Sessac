@@ -1,13 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GameStateSubject.h"
-
-
-UGameStateSubject ::UGameStateSubject()
-{
-    PlayerScore = 0;
-}
+#include "GI_Puzzle.h"
+#include "Kismet/GameplayStatics.h"
 
 //옵저버 등록 
 void UGameStateSubject::RegisterObserver(TScriptInterface<IObserver> Observer)
@@ -22,26 +15,49 @@ void UGameStateSubject::UnregisterObserver(TScriptInterface<IObserver> Observer)
 }
 
 //점수 변화시, 모든 옵저버들에게 알림
-void UGameStateSubject::NotifyObservers()
+void UGameStateSubject::NotifyObservers(UObject* WorldContextObject)
 {
-    // 등록된 Observers 들 반복문으로 확인 후,
-    for (TScriptInterface<IObserver> Observer : Observers)
+    // 옵저버 리스트에서 유효하지 않은 옵저버 제거
+    Observers.RemoveAll([](const TScriptInterface<IObserver>& Observer)
     {
-        // Observer 객체체가 유효하고 && IObserver 인터페이스를 구현하고 있는지 확인
-        if (Observer.GetObject() 
-        && Observer.GetObject()->GetClass()->ImplementsInterface(UObserver::StaticClass()))
+        if (!IsValid(Observer.GetObject()))
         {
-            // 옵저버의 OnNotify 함수 호출 
-            // 실질적인 클래스 인스턴스 -> 함수를 호출
-            // 인터페이스 -> 호출 , 의존성이 확낮아짐 
-            IObserver::Execute_OnNotify(Observer.GetObject(),PlayerScore);
+            UE_LOG(LogTemp, Warning, TEXT("Invalid observer detected, removing from list."));
+            return true; // 유효하지 않으면 제거
+        }
+        return false; // 유효하면 유지
+    });
+
+    // WorldContextObject가 nullptr이 아닌지 확인
+    if (!WorldContextObject)
+    {
+        UE_LOG(LogTemp, Error, TEXT("WorldContextObject is null."));
+        return;
+    }
+
+    // GameInstance 가져오기
+    UGI_Puzzle* GameInstance = Cast<UGI_Puzzle>(UGameplayStatics::GetGameInstance(WorldContextObject));
+
+    if (!GameInstance)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to get GameInstance from WorldContextObject"));
+        return;
+    }
+
+    int32 CurrentScore = GameInstance->GetCurrentScore();
+
+    // 옵저버들에게 점수 업데이트 알림
+    for (const TScriptInterface<IObserver>& Observer : Observers)
+    {
+        if (IsValid(Observer.GetObject())
+            && Observer.GetObject()->GetClass()->ImplementsInterface(UObserver::StaticClass()))
+        {
+            // 옵저버에게 알림
+            IObserver::Execute_OnNotify(Observer.GetObject(), CurrentScore);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Invalid observer or interface not implemented."));
         }
     }
-}
-
-//점수를 변경하는 함수,
-void UGameStateSubject::IncreasePlayerScore(int32 Increament)
-{
-    PlayerScore += Increament;
-    NotifyObservers();
 }

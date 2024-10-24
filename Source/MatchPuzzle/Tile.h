@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
+class ATileGrid;
 UCLASS()
 class MATCHPUZZLE_API ATile : public AActor
 {
@@ -31,6 +32,9 @@ protected:
 	void UpdateAppearance();
 	
 public:
+
+	UPROPERTY()
+	ATileGrid* TileGrid;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
 	FName TileType;
@@ -44,16 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
 	TMap<FName, UStaticMesh*> TileMeshes;
 
-
-	//타일 매칭 확인 함수
-	bool IsMatcing(ATile* OtherTile) const;
-
 	//타일의 외형을 TileType에 따라 설정하는 함수
 	void UpdateTileAppearance();
 	
-	void ProceesDataInParallerl();
-
-
     // 타일이 2D 좌표 (그리드) 에서의 위치
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile Properties")
     FVector2D TilePosition;
@@ -62,5 +59,11 @@ public:
     bool IsAdjacentTo(ATile* OtherTile) const;
     
     //타일의 위치를 변경할 때, 그리드 상의 위치 업데이트 함수
-    void UpdateTilePosition(const FVector2D& NewPosition);    
+    void UpdateTilePosition(const FVector2D& NewPosition);
+	
+	// 타일 타입을 설정하는 함수
+	void SetTileType(FName NewType)
+	{
+		TileType = NewType;
+	}
 };
