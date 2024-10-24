@@ -25,4 +25,8 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Observer")
     void OnNotify(int32 UpdateScore);
+
+	//남은 이동 횟수 알림 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Observer")
+	void OnNotifyRemainingMoves(int32 RemainingMoves);
 };

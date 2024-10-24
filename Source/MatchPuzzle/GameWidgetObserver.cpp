@@ -13,6 +13,14 @@ void UGameWidgetObserver::OnNotify_Implementation(int32 UpdateScore)
 	UpdateSocreUI(UpdateScore);
 }
 
+void UGameWidgetObserver::OnNotifyRemainingMoves_Implementation(int32 moves)
+{
+	if (MovesText)
+	{
+		MovesText->SetText(FText::AsNumber(moves));
+	}
+}
+
 void UGameWidgetObserver::UpdateSocreUI(int32 NewScore)
 {
 	// ScoreText가 바인딩되어 있는지 확인

@@ -1,6 +1,8 @@
 #include "SwapTileCommand.h"
 #include "Tile.h"
 #include "TileGrid.h"
+#include "GI_Puzzle.h"
+#include "Kismet/GameplayStatics.h"
 
 // 커맨드 초기화
 void USwapTileCommand::Initialize(ATile* InFirstTile, ATile* InSecondTile)
@@ -29,6 +31,12 @@ void USwapTileCommand::Execute()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to retrieve TileGrid from the tile."));
 		return;
+	}
+
+	UGI_Puzzle* GameInstance = Cast< UGI_Puzzle>(UGameplayStatics::GetGameInstance(TileGrid->GetWorld()));
+	if (GameInstance)
+	{
+		GameInstance->DecreaseMoves();
 	}
 
 	// 그리드에서 타일을 교환

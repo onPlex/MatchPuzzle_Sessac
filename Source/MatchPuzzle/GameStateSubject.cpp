@@ -61,3 +61,46 @@ void UGameStateSubject::NotifyObservers(UObject* WorldContextObject)
         }
     }
 }
+
+void UGameStateSubject::NotifyObserversMoves(UObject* WorldContextObject)
+{
+    Observers.RemoveAll([](const TScriptInterface<IObserver>& Observer)
+      {
+           return !IsValid(Observer.GetObject());
+     });
+
+    // WorldContextObject가 nullptr이 아닌지 확인
+    if (!WorldContextObject)
+    {
+        UE_LOG(LogTemp, Error, TEXT("WorldContextObject is null."));
+        return;
+    }
+
+    // GameInstance 가져오기
+    UGI_Puzzle* GameInstance = Cast<UGI_Puzzle>(UGameplayStatics::GetGameInstance(WorldContextObject));
+
+
+    if (!GameInstance)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to get GameInstance from WorldContextObject"));
+        return;
+    }
+
+    int32 RemainingMoves = GameInstance->GetRemainingMoves();
+
+    // 옵저버들에게 점수 업데이트 알림
+    for (const TScriptInterface<IObserver>& Observer : Observers)
+    {
+        if (IsValid(Observer.GetObject())
+            && Observer.GetObject()->GetClass()->ImplementsInterface(UObserver::StaticClass()))
+        {
+            // 옵저버에게 알림
+            IObserver::Execute_OnNotifyRemainingMoves(Observer.GetObject(), RemainingMoves);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Invalid observer or interface not implemented."));
+        }
+    }
+
+}

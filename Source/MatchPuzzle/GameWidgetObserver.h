@@ -21,9 +21,15 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ScoreText;
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* MovesText;
+
 public:
 	//주체로부터 상태변화를 수신할 때 호출하는 함수
 	virtual void OnNotify_Implementation(int32 UpdateScore) override;
+
+	//주체로부터 상태변화를 수신할 때 호출하는 함수
+	virtual void OnNotifyRemainingMoves_Implementation(int32 moves) override;
 
 	UFUNCTION()
 	void UpdateSocreUI(int32 NewScore);

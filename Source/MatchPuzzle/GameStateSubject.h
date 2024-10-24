@@ -28,4 +28,6 @@ public:
 	 
 	// WorldContextObject를 매개변수로 받아서 처리
 	void NotifyObservers(UObject* WorldContextObject);
+
+	void NotifyObserversMoves(UObject* WorldContextObject);
 };

@@ -35,6 +35,16 @@ void UGI_Puzzle::DecreaseMoves()
 	if(RemaingMoves > 0)
 	{
 		RemaingMoves--;
+
+		if (GameStateSubjectInstance)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Notifying observers."));
+			GameStateSubjectInstance->NotifyObserversMoves(this); // 'this'를 WorldContextObject로 전달
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("GameStateSubjectInstance is null. Cannot notify observers."));
+		}
 	}
 }
 
@@ -47,6 +57,11 @@ void UGI_Puzzle::ResetGameState()
 int32 UGI_Puzzle::GetCurrentScore() const
 {
 	return PlayerScore;
+}
+
+int32 UGI_Puzzle::GetRemainingMoves() const
+{
+	return RemaingMoves;
 }
 
 void UGI_Puzzle::SetGameStateSubject(UGameStateSubject* Subject)

@@ -38,6 +38,9 @@ public:
 	// 현재 점수를 가져오는 함수
 	int32 GetCurrentScore() const;
 
+	// 현재 점수를 가져오는 함수
+	int32 GetRemainingMoves() const;
+
 	// Observer 주체를 설정하는 함수
 	void SetGameStateSubject(UGameStateSubject* Subject);
 };
