@@ -7,6 +7,8 @@
 #include "SwapTileCommand.h"
 #include "Tile.h"
 #include "TileCommandInvoker.h"
+#include "TileGrid.h"
+#include "Kismet/GameplayStatics.h"
 
 ATileGamePlayerController::ATileGamePlayerController()
 {
@@ -33,6 +35,17 @@ void ATileGamePlayerController::BeginPlay()
 			_Subsystem->AddMappingContext(InputMapping, 0);
 		}
 	}
+
+	// GetActorOfClass를 사용하여 TileGrid 찾기
+	AActor* _FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), 
+			ATileGrid::StaticClass());
+	TileGrid = Cast<ATileGrid>(_FoundActor);
+
+	
+	if (!TileGrid)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TileGrid not found in the world."));
+	}
 }
 
 void ATileGamePlayerController::SetupInputComponent()
@@ -41,7 +54,8 @@ void ATileGamePlayerController::SetupInputComponent()
 
 	if (UEnhancedInputComponent* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		EnhancedInputComp->BindAction(SelectInputAction, ETriggerEvent::Started, this, &ATileGamePlayerController::SelectTile);
+		EnhancedInputComp->BindAction(SelectInputAction, ETriggerEvent::Started, this,
+		                              &ATileGamePlayerController::SelectTile);
 	}
 }
 
@@ -81,41 +95,35 @@ void ATileGamePlayerController::SelectTile(const FInputActionValue& Value)
 				}
 			}
 		}
-
 	}
 }
 
 void ATileGamePlayerController::ProcessSelectTiles()
 {
-	//두 개의 타일이 선택되었을 때
 	if (!FirstSelecetTile.IsValid() || !SecondSelecetTile.IsValid())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid tiles Selected"));
+		UE_LOG(LogTemp, Error, TEXT("Invalid tiles selected."));
 		return;
 	}
 
-	//타일이 인접한지 확인
-	if (!FirstSelecetTile->IsAdjacentTo(SecondSelecetTile.Get()))
+	if(!FirstSelecetTile->IsAdjacentTo(SecondSelecetTile.Get()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Tiles are not adjacent "));
-	   return;
+		UE_LOG(LogTemp, Error, TEXT("Tiles are not adjacent"));
+		return;;
 	}
 
-
-	//타일 처리 로직 ( 자리교환, 매칭확인 )
-
-	//교환명령 생성
+	// 교환 명령 생성
 	USwapTileCommand* SwapCommand = NewObject<USwapTileCommand>();
 	SwapCommand->Initialize(FirstSelecetTile.Get(), SecondSelecetTile.Get());
 
 	ATileCommandInvoker* CommandInvoker = GetWorld()->SpawnActor<ATileCommandInvoker>();
 	CommandInvoker->ExecuteCommand(SwapCommand);
 
-	//타일 선택 해제
+	// 타일 선택 해제
 	if(FirstSelecetTile.IsValid())FirstSelecetTile->SetSelected(false);
 	if(SecondSelecetTile.IsValid())SecondSelecetTile->SetSelected(false);
 
-	//선택 초기화
+	// 선택 초기화
 	if(FirstSelecetTile.IsValid())FirstSelecetTile = nullptr;
 	if(SecondSelecetTile.IsValid())SecondSelecetTile = nullptr;
 }

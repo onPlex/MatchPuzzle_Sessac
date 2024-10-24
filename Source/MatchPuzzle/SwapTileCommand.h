@@ -5,6 +5,7 @@
 #include "Tile.h"
 #include "SwapTileCommand.generated.h"
 
+class ATileGrid;
 UCLASS()
 class MATCHPUZZLE_API USwapTileCommand : public UObject, public ICommand
 {
@@ -17,7 +18,6 @@ private:
 	// 교환 전 타일의 위치
 	FVector FirstTileOriginalLocation;
 	FVector SecondTileOriginalLocation;
-
 public:
 	// 생성자
 	void Initialize(ATile* InFirstTile, ATile* InSecondTile);

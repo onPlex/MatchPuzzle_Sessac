@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Match3GameMode.generated.h"
-
 /**
  * 
  */
+class UGameWidgetObserver;
 UCLASS()
 class MATCHPUZZLE_API AMatch3GameMode : public AGameModeBase
 {
@@ -16,4 +16,7 @@ class MATCHPUZZLE_API AMatch3GameMode : public AGameModeBase
 
 public:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UGameWidgetObserver> MainWidgetClass;
 };

@@ -20,6 +20,7 @@ ATile::ATile()
 	
 	//그리드상의 초기화 위치
 	TilePosition = FVector2D::ZeroVector;
+	
 }
 
 
@@ -37,12 +38,6 @@ bool ATile::IsMatching(ATile* otherTile) const
 	return TileType == otherTile->TileType;
 }
 
-bool ATile::IsMatcing(ATile* OtherTile) const
-{
-	// 같은 타일인지 여부 -> OtherTile 이랑 같은 타입인가 ?
-	return TileType == OtherTile->TileType;
-}
-
 void ATile::UpdateTileAppearance()
 {
 	//TileMeshes Map에 TileType에 해당하는 키값이 존재하는가 ?
@@ -56,29 +51,17 @@ void ATile::UpdateTileAppearance()
 	}
 }
 
-void ATile::ProceesDataInParallerl()
-{
-	TArray<int32> DataArray;
-	DataArray.Init(0, 100);
-
-	ParallelFor(DataArray.Num(), [&](int32 Index)
-	{
-		DataArray[Index] = Index * 2;
-
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f
-			                                 , FColor::Red,
-			                                 FString::Printf(TEXT("Tile %d-%d"), Index, DataArray[Index]));
-		}
-	});
-	UE_LOG(LogTemp, Warning, TEXT("ParallelForFinish"));
-}
-
 void ATile::SetSelected(bool bSelected)
 {
 	bIsSelected = bSelected;
-	UpdateAppearance();
+	if (TileMeshComponent)
+	{
+		UpdateAppearance();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("TileMeshComponent is nullptr in SetSelected for Tile: %s"), *GetName());
+	}
 }
 void ATile::UpdateAppearance()
 {
@@ -107,17 +90,13 @@ void ATile::UpdateAppearance()
 
 bool ATile::IsAdjacentTo(ATile* OtherTile) const
 {
-	if (!OtherTile)
-	{
-		return false;
-	}
+	if (!OtherTile) return false;
 
-	//두 타일의 그리드 좌표 차이를 계산하여 인접 여부 확인
-
+	// Calculate the difference in grid coordinates
 	int32 DeltaX = FMath::Abs(TilePosition.X - OtherTile->TilePosition.X);
 	int32 DeltaY = FMath::Abs(TilePosition.Y - OtherTile->TilePosition.Y);
 
-	//두 타일이 가로 또는 세로 1칸 차이일 경우
+	// Tiles are adjacent if they're next to each other horizontally or vertically
 	return (DeltaX + DeltaY) == 1;
 }
 
@@ -125,3 +104,5 @@ void ATile::UpdateTilePosition(const FVector2D& NewPosition)
 {
 	TilePosition = NewPosition;
 }
+
+
